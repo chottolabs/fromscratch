@@ -1,0 +1,32 @@
+# Ninja build file for hello project
+
+# Variables
+cc = clang
+cflags = -Wall -Wextra -Iinclude
+builddir = build
+
+# Rules
+rule cc
+  command = $cc $cflags -c $in -o $out
+  description = CC $out
+
+rule link
+  command = $cc $cflags $in -o $out
+  description = LINK $out
+
+# Build targets
+build $builddir/hello.o: cc src/hello.c | include/hello.h
+build $builddir/main.o: cc src/main.c | include/hello.h
+
+# Executable target
+build hello_program: link $builddir/main.o $builddir/hello.o
+
+# Default target
+default hello_program
+
+# Clean rule
+rule clean
+  command = rm -rf $builddir hello_program
+  description = Cleaning build files
+
+build clean: clean
